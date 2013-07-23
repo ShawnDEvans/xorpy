@@ -8,7 +8,7 @@ def xorcrypt(data, key):
         result += chr (ord(data[i]) ^ ord(pad[i]))        
     return result
 
-title = 'Xorpy v1.0'
+title = 'Xorpy v1.1'
 author = 'Coded by: Shawn Evans'
 email = 'Email: Shawn.Evans@knowledgeCG.com'
    
