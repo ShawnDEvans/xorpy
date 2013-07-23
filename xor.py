@@ -3,8 +3,8 @@ import sys
 
 def xorcrypt(data, key):
     result = ''
-    pad = key*(len(data)/len(key)) + key[:(len(data)%len(key))]
-    for i in range(len(data)):
+    pad = key*(len(data)/len(key)) + key[:(len(data)%len(key))-1]
+    for i in range(len(data)-1):
         result += chr (ord(data[i]) ^ ord(pad[i]))        
     return result
 
