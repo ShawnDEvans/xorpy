@@ -9,11 +9,7 @@ def round_up(number): return int(number) + (number % 1 > 0)
 def xorcrypt(data, key):
     try:
         result = bytearray()
-        print(len(data))
-        print(round_up(len(data)/len(key)))
-        print(round_up(len(data)%len(key)))
         pad = key * round_up(len(data)/len(key)) + key[:round_up(len(data)%len(key))]
-        print(pad)
         pad.encode('ascii')
         for i in range(len(data)):
             result.append(data[i] ^ ord(pad[i]))
