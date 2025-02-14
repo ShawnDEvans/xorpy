@@ -1,42 +1,53 @@
-#!/usr/bin/python
-import sys 
+#!/usr/bin/env python3
+import sys
+import argparse
+import string
+import random
 
 def xorcrypt(data, key):
-    result = ''
-    pad = key*(len(data)/len(key)) + key[:(len(data)%len(key))]
-    for i in range(len(data)-1):
-        result += chr (ord(data[i]) ^ ord(pad[i]))        
-    return result
+    try:
+        result = bytearray()
+        pad = key*round(len(data)/len(key)) + key[:round(len(data)%len(key))]
+        pad.encode('ascii')
+        for i in range(len(data)-1):
+            result.append(data[i] ^ ord(pad[i]))
+        return bytes(result)
+    except Exception as e:
+        print(e)
 
 title = 'Xorpy v1.1'
 author = 'Coded by: Shawn Evans'
-email = 'Email: Shawn.Evans@knowledgeCG.com'
-   
-def usage():
-    print '*'*40
-    print '* %s%s*' % (title, ' '*int(37-len(title)))
-    print '*'*40
-    print '* %s%s*' % (author, ' '*int(37-len(author)))
-    print '* %s%s*' % (email, ' '*int(37-len(email)))
-    print '*'*40
-    print ''
-    print 'Usage: python %s %s %s' % (sys.argv[0], '"key"', 'encrypted.txt')
-    print '$ cat decryptMe.txt | python %s %s' % (sys.argv[0], '"key"')
-    print '$ cat encryptMe.txt | python %s %s' % (sys.argv[0], '"$eCreTkey"')
+email = 'Email: ShawnDEvans@gmail.com<mailto:ShawnDEvans@gmail.com>'
 
 if __name__ == '__main__':
 
+    parser = argparse.ArgumentParser(prog='Xorpy v1.2', description='Stupid simple XOR encryption utility', epilog='Duct taped together by Shawn Evans - sevans@nopsec.com')
+    parser.add_argument('-o', '--output', help='Output file name, random otherwise.', dest='output_file')
+    parser.add_argument('-k', '--key', help='Secret key, ex "P@ssH0le"', required=True)
+    parser.add_argument('input_file', nargs='?')
+
+    args = parser.parse_args()
+
     try:
         if not sys.stdin.isatty():
-            inFile = sys.stdin
+            inFile = sys.stdin.buffer
         else:
-            inFile = sys.argv[2]
-    except:
-        usage()
+            inFile = open(args.input_file)
+        key = sys.argv[1]
+    except Exception as e:
+        print(e)
+        parser.print_help()
         sys.exit()
-   
-    key = sys.argv[1]
 
     data = inFile.read()
-    print xorcrypt(data, key)
+    enc_data = xorcrypt(data, key)
+    output_file = ''
+    if not args.output_file:
+        rando = ''.join(random.choice(string.ascii_letters) for i in range(10))
+        output_file = f'{rando}.txt'
+    else:
+        output_file = args.output_file
+    output = open(f'{output_file}', 'wb')
+    output.write(enc_data)
+    output.close()
 
