@@ -4,12 +4,18 @@ import argparse
 import string
 import random
 
+def round_up(number): return int(number) + (number % 1 > 0)
+
 def xorcrypt(data, key):
     try:
         result = bytearray()
-        pad = key*round(len(data)/len(key)) + key[:round(len(data)%len(key))]
+        print(len(data))
+        print(round_up(len(data)/len(key)))
+        print(round_up(len(data)%len(key)))
+        pad = key * round_up(len(data)/len(key)) + key[:round_up(len(data)%len(key))]
+        print(pad)
         pad.encode('ascii')
-        for i in range(len(data)-1):
+        for i in range(len(data)):
             result.append(data[i] ^ ord(pad[i]))
         return bytes(result)
     except Exception as e:
@@ -23,7 +29,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(prog='Xorpy v1.2', description='Stupid simple XOR encryption utility', epilog='Duct taped together by Shawn Evans - sevans@nopsec.com')
     parser.add_argument('-o', '--output', help='Output file name, random otherwise.', dest='output_file')
-    parser.add_argument('-k', '--key', help='Secret key, ex "P@ssH0le"', required=True)
+    parser.add_argument('-k', '--key', help='Secret key, ex "P@ssH0le"', dest='key', required=True)
     parser.add_argument('input_file', nargs='?')
 
     args = parser.parse_args()
@@ -40,7 +46,7 @@ if __name__ == '__main__':
         sys.exit()
 
     data = inFile.read()
-    enc_data = xorcrypt(data, key)
+    enc_data = xorcrypt(data, args.key)
     output_file = ''
     if not args.output_file:
         rando = ''.join(random.choice(string.ascii_letters) for i in range(10))
