@@ -34,7 +34,7 @@ if __name__ == '__main__':
         if not sys.stdin.isatty():
             inFile = sys.stdin.buffer
         else:
-            inFile = open(args.input_file)
+            inFile = open(args.input_file, 'rb')
         key = sys.argv[1]
     except Exception as e:
         print(e)
